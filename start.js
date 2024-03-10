@@ -6,3 +6,7 @@ createSelect()
 select.addEventListener("input", ()=>{
     searchPokemon(select.value)
 })
+
+document.querySelector("#getAllPokemons").addEventListener("click", ()=>{
+    allPokemons();
+})

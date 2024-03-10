@@ -3,12 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Généraliste</title>
+    <title>Pokedex Vite + vanilla JS</title>
     <link rel="stylesheet" href="style.css">
+    <script src="/main.js" defer></script>
+    <script src="/start.js" defer></script>
   </head>
   <body>
     <header>
-      <h1>Pokemons</h1>
+      <h1><a href="#">Pokédex Vite + JS</a></h1>
       <nav>
         <a href="index.html">vite</a>
         <a href="index-noVite.html">vanilla</a>
@@ -19,7 +21,7 @@
       <section id="pokemonSearch">
         <h2>Rechercher un pokémon</h2>
         <i>Recherche par nom / id</i>
-        <input type="search" name="search" id="search">
+        <input type="search" name="search" id="search" placeholder="Entrez un nom ou un N° de pokemon">
         <select name="pokemonNames" id="pokemonNames"></select>
         <article class="results">
           
@@ -27,13 +29,12 @@
       </section>
       <section id="allPokemons">
         <h2>Liste complete</h2>
+        <button id="getAllPokemons">Afficher liste complète</button>
         <article>
           
         </article>
       </section>
     </main>
     <div id="app"></div>
-    <script src="/main.js"></script>
-    <script src="/start.js"></script>
   </body>
 </html>

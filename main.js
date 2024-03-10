@@ -2,20 +2,34 @@ let GET_pokemon = "https://pokeapi.co/api/v2/pokemon/";
 const pokemonSearch = document.querySelector("#pokemonSearch .results");
 const select = document.querySelector("#pokemonNames");
 
+(function save(){
+  getData(1)
+  .then(data=>{
+    localStorage.setItem("data", JSON.stringify(data))
+    searchPokemon(1);
+    console.log(localStorage);
+  })
+})()
+
 async function getData(pokemon){
   const response = await fetch(GET_pokemon + pokemon)
   const data = await response.json()
   return data
 }
 function allPokemons(){
-  let allPokemon; 
   for (let i=0; i<=1025; i++){
     getData(i)
     .then(data => {
-      allPokemon = data;
-      localStorage("pokemons", stringify(allPokemon));
-      GET_pokemon = json.parse(allPokemon);
-      cardify(data, document.querySelector("#allPokemons article"))
+      let a = document.createElement("a")
+      a.class="miniature"
+      a.href="#"
+      let image = document.createElement("img")
+      image.src = data.sprites.front_default;
+      let name = document.createElement("h3")
+      name.innerText = data.name
+      a.append(image,name)
+      a.addEventListener("click", ()=>{searchPokemon(data.id)})
+      document.querySelector("#allPokemons article").append(a)
     })
     .catch(error => {
       console.error("Error fetching data:", error);
@@ -24,30 +38,35 @@ function allPokemons(){
 }
 function cardify(data, where){
   let secondaryType = "test"
-  data.types[1]? secondaryType = data.types[1].type.name: secondaryType = "";
+  data.types[1]? secondaryType = " / " + data.types[1].type.name: secondaryType = "";
   let hiddenAbility = "test"
   data.abilities[1]? hiddenAbility = data.abilities[0].name: hiddenAbility = "non";
   where.innerHTML += 
   `
   <figure>
-    <img src=${data.sprites.back_default} />
-    <img src=${data.sprites.front_default} />
+    <div class="images">
+      <img src=${data.sprites.back_default} />
+      <img src=${data.sprites.front_default} />
+    </div>
     <figcaption>
       <h3>${data.id} : ${data.name}</h3>
       <aside class="types">
         <h4>Types</h4>
         <div>
-          <p>${data.types[0].type.name}</p>
-          <p>${secondaryType}</p>
+          <p>${data.types[0].type.name}${secondaryType}</p>
         </div>
       </aside>
       <aside class="stats">
-        ${displayStats(data)}
-        
+      <h4>Statistics</h4>
+      ${displayStats(data)}
+      
+      </aside>
+      <aside>
+      <h4>Abilities</h4>
         ${displayAbilities(data)}
       </aside>
       <aside stats="cries">
-        <h4>Cris</h4>
+        <h4>Cries</h4>
         <div>
           <audio src=${data.cries.latest} controls></audio>
           <audio src=${data.cries.legacy} controls></audio>
@@ -71,7 +90,22 @@ function searchPokemon(pokemon){
 function displayStats(data){
   let statList=[];
   for(let i=0; i<6;i++){
-    statList.push(`<p>${data.stats[i].stat.name} ${data.stats[i].base_stat}</p>`)
+    let color;
+    let statJauge = data.stats[i].base_stat/255*100;
+
+    if (Number(statJauge)>40){
+      color = "seagreen"
+    } else  if (Number(statJauge)>30){
+      color = "skyblue"
+    } else  if (Number(statJauge)>20){
+      color = "orange"
+    } else  if (Number(statJauge)>10){
+      color = "indianred"
+    } else {
+      color = "crimson"
+    }
+    
+    statList.push(`<p>${data.stats[i].stat.name} : <span style="width : ${statJauge}%; background:${color}">${data.stats[i].base_stat}</span></p>`)
   }
   return statList.join("");
 }
