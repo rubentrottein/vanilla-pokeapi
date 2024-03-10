@@ -1,5 +1,6 @@
 let GET_pokemon = "https://pokeapi.co/api/v2/pokemon/";
 const pokemonSearch = document.querySelector("#pokemonSearch .results");
+const select = document.querySelector("#pokemonNames");
 
 async function getData(pokemon){
   const response = await fetch(GET_pokemon + pokemon)
@@ -24,34 +25,37 @@ function allPokemons(){
 function cardify(data, where){
   let secondaryType = "test"
   data.types[1]? secondaryType = data.types[1].type.name: secondaryType = "";
-  
+  let hiddenAbility = "test"
+  data.abilities[1]? hiddenAbility = data.abilities[0].name: hiddenAbility = "non";
   where.innerHTML += 
-    `<figure>
+  `
+  <figure>
     <img src=${data.sprites.back_default} />
     <img src=${data.sprites.front_default} />
-      <figcaption>
-        <h3>${data.id} : ${data.name}</h3>
-        <aside class="types">
-          <h4>Types</h4>
-          <div>
-            <p>${data.types[0].type.name}</p>
-            <p>${secondaryType}</p>
-          </div>
-        </aside>
-        <aside class="stats">
-          ${displayStats(data)}
-          
-          ${displayAbilities(data)}
-        </aside>
-        <aside stats="cries">
-          <h4>Cris</h4>
-          <div>
-            <audio src=${data.cries.latest} controls></audio>
-            <audio src=${data.cries.legacy} controls></audio>
-          </div>
-        </aside>
-      </figcaption>
-    </figure>`
+    <figcaption>
+      <h3>${data.id} : ${data.name}</h3>
+      <aside class="types">
+        <h4>Types</h4>
+        <div>
+          <p>${data.types[0].type.name}</p>
+          <p>${secondaryType}</p>
+        </div>
+      </aside>
+      <aside class="stats">
+        ${displayStats(data)}
+        
+        ${displayAbilities(data)}
+      </aside>
+      <aside stats="cries">
+        <h4>Cris</h4>
+        <div>
+          <audio src=${data.cries.latest} controls></audio>
+          <audio src=${data.cries.legacy} controls></audio>
+        </div>
+      </aside>
+    </figcaption>
+  </figure>
+  `
 }
 function searchPokemon(pokemon){
   document.querySelector("#pokemonSearch .results").innerHTML = "";
@@ -67,23 +71,20 @@ function searchPokemon(pokemon){
 function displayStats(data){
   let statList=[];
   for(let i=0; i<6;i++){
-    statList.push(`<p>${data.stats[i].stat.name} ${data.stats[0].base_stat}</p>`)
+    statList.push(`<p>${data.stats[i].stat.name} ${data.stats[i].base_stat}</p>`)
   }
   return statList.join("");
 }
 
 function displayAbilities(data){
-  let cardData="";
-  if(data.abilities.length>=1){
-    cardData+= `<p>${data.abilities[0].ability.name} / ${data.abilities[1].ability.name}</p>`
-  } else{
-    cardData+= `<p>${data.abilities[0].ability.name}</p>`
+  let cardData=[];
+  try{
+    cardData.push(`<p>${data.abilities[0].ability.name} / ${data.abilities[1].ability.name}</p>`)
+  } catch(e){
+    console.info(e);
   }
-  if(data.abilities.length>=2){
-    cardData+= `<p>Talent caché : ${data.abilities[2].ability.name}</p>`
-  } else {
-    cardData+= `<p>Talent caché : non</p>`
-  }
+  data.abilities[2] ? cardData.push("<p>Hidden Ability : "+ data.abilities[2].ability.name + "</p>") : cardData.push("<p>No hidden ability</p>")
+  return cardData.join("");
 }
 
 
@@ -98,4 +99,16 @@ function getShiny(){
       ]
       return images
   })
+}
+
+function createSelect(){
+  for (let i=0; i<=1025; i++){
+    getData(i)
+    .then(data => {
+      let option = document.createElement("option")
+      option.innerHTML = data.name
+      option.value = data.name
+    select.append(option);
+    })
+  }
 }

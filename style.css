@@ -2,10 +2,11 @@
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 body{
-  background: url("/public/pokemonbg/gen1Starters.jpeg");
+  background: url("public/pokemonbg/gen1Starters.jpeg");
+  color: white;
 }
 figure{
-  background: #ffffff00;
+  background: rgba(0,0,0,.7);
   border-radius: 10px;
   backdrop-filter: blur(15px);
   padding: 1em;
